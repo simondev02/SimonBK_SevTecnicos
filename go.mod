@@ -1,4 +1,4 @@
-module SimonBK_Instalaciones
+module SimonBK_SevTecnicos
 
 go 1.20
 

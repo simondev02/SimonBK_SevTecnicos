@@ -14,10 +14,10 @@ RUN go mod download
 COPY . .
 
 # Compilar la aplicación
-RUN go build -o SimonBK_Instalaciones .
+RUN go build -o SimonBK_SevTecnicos .
 
 # Exponer el puerto 60090
 EXPOSE 60090
 
 # Comando para ejecutar la aplicación
-CMD ["./SimonBK_Instalaciones"]
+CMD ["./SimonBK_SevTecnicos"]

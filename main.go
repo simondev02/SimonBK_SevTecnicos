@@ -9,10 +9,10 @@
 package main
 
 import (
-	"SimonBK_Instalaciones/docs"
-	"SimonBK_Instalaciones/infra/db"
+	"SimonBK_SevTecnicos/docs"
+	"SimonBK_SevTecnicos/infra/db"
 
-	"SimonBK_Instalaciones/routers"
+	"SimonBK_SevTecnicos/routers"
 	"fmt"
 	"os"
 	"os/signal"
