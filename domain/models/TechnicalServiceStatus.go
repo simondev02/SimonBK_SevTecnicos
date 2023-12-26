@@ -2,7 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
-type VehicleBrand struct {
+type TechnicalServiceStatus struct {
 	gorm.Model
 	Name *string
 }

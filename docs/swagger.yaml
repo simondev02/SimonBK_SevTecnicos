@@ -1,0 +1,95 @@
+basePath: /Vehicle
+definitions:
+  swagger.Technician:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+host: 192.168.40.104:60030
+info:
+  contact: {}
+  version: "1"
+paths:
+  /technician/:
+    get:
+      description: Obtiene una lista de todos los Tecnicos.
+      parameters:
+      - default: 1
+        description: Número de página para la paginación
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Tamaño de página para la paginación
+        in: query
+        name: pageSize
+        type: integer
+      - description: Nombre del Tecnico
+        in: query
+        name: technicians
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Obtiene todos los Tecnicos
+      tags:
+      - Technicians
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevio técnico con los datos proporcionados
+      parameters:
+      - description: Datos de la marca de vehículo a crear
+        in: body
+        name: vb
+        required: true
+        schema:
+          $ref: '#/definitions/swagger.Technician'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/swagger.Technician'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Crea una nuevo técnico con los datos proporcionados
+      tags:
+      - Technicians
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

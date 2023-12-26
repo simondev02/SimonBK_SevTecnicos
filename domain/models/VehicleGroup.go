@@ -4,8 +4,11 @@ import "gorm.io/gorm"
 
 type VehicleGroup struct {
 	gorm.Model
-	Name        *string
-	Description *string
-	DeletedBy   *uint `json:"deletedBy"`
-	UpdatedBy   *uint `json:"updatedBy"`
+	Name               *string `gorm:"unique"`
+	Description        *string
+	FkVehicleGroupType *uint
+	VehicleGroupType   VehicleGroupType `gorm:"foreignKey:FkVehicleGroupType"`
+	CreatedBy          *uint
+	DeletedBy          *uint
+	UpdatedBy          *uint
 }

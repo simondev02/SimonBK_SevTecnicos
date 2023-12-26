@@ -6,10 +6,8 @@ import (
 
 type Customer struct {
 	gorm.Model
-	Name      string
-	Dni       string `gorm:"uniqueIndex:idx_fkcompany_identification"`
-	FkCompany int    `gorm:"uniqueIndex:idx_fkcompany_identification"`
-	DeletedBy *uint
-	UpdatedBy *uint
+	Name      *string
+	Dni       *string `gorm:"uniqueIndex:idx_fkcompany_identification"`
+	FkCompany *uint   `gorm:"uniqueIndex:idx_fkcompany_identification"`
 	Company   Company `gorm:"foreignKey:FkCompany"`
 }

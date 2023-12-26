@@ -8,24 +8,22 @@ import (
 
 type Vehicle struct {
 	gorm.Model
-	Plate            *string `gorm:"type:varchar(20):unique"`
-	Vin              *string `gorm:"type:varchar(20):unique"`
-	Year             *string `gorm:"type:varchar(20)"`
-	Capacity         *int
-	SpeedAllowed     *int `gorm:"column:Speedallowed"`
+	Plate            *string
+	Vin              *string
+	Year             *string
+	Capacity         *uint
+	SpeedAllowed     *uint
 	PurchaseDate     *time.Time
 	RegistrationDate *time.Time
-	FkCompany        *int
-	FkCustomer       *int
-	FkBrand          *int
-	FkVehType        *int
-	FkLine           *int
-	FkFuelType       *int
-	FkEngineType     *int
-	FkAvlDevice      *int `gorm:"type:varchar(20):unique"`
-	FkGroupVehicle   *int
-	CreditNo         *int
-	CaseNo           *int
+	FkCompany        *uint
+	FkCustomer       *uint
+	FkBrand          *uint
+	FkVehType        *uint
+	FkLine           *uint
+	FkFuelType       *uint
+	FkEngineType     *uint
+	FkAvlDevice      *uint
+	FkGroupVehicle   *uint
 	VehicleGroup     VehicleGroup `gorm:"foreignKey:FkGroupVehicle"`
 	Company          Company      `gorm:"foreignKey:FkCompany"`
 	Customer         Customer     `gorm:"foreignKey:FkCustomer"`
@@ -35,6 +33,7 @@ type Vehicle struct {
 	AvlDevice        AvlDevice    `gorm:"foreignKey:FkAvlDevice"`
 	FuelType         FuelType     `gorm:"foreignKey:FkFuelType"`
 	EngineType       EngineType   `gorm:"foreignKey:FkEngineType"`
+	CreatedBy        *uint
 	DeletedBy        *uint
 	UpdatedBy        *uint
 }
