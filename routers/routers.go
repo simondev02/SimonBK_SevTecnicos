@@ -18,6 +18,8 @@ func SetupRouter(r *gin.Engine) {
 	{
 		technicians.GET("/", technician.GetAllTechniciansController)
 		technicians.POST("/", technician.CreateTechniciansHandler)
+		technicians.PUT("/:id", technician.UpdateTechnicianHandler)
+		technicians.DELETE("/:id", technician.DeleteTechnicianHandler)
 	}
 
 }

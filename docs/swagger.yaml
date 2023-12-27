@@ -87,6 +87,98 @@ paths:
       summary: Crea una nuevo técnico con los datos proporcionados
       tags:
       - Technicians
+  /technician/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Elimina un Tecnico  de la base de datos basado en el ID proporcionado
+      parameters:
+      - description: ID del tecnico a eliminar
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mensaje de éxito al eliminar
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Dispositivo Avl no encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Error interno del servidor
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: Elimina un Tecnico por ID
+      tags:
+      - Technicians
+    put:
+      consumes:
+      - application/json
+      description: Actualiza un tecnico por ID con los datos proporcionados
+      parameters:
+      - description: ID del Tecnico a actualizar
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Datos de la marca de vehículo a actualizar
+        in: body
+        name: vb
+        required: true
+        schema:
+          $ref: '#/definitions/swagger.Technician'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Actualiza un Tecnico por ID
+      tags:
+      - Technicians
 securityDefinitions:
   ApiKeyAuth:
     in: header

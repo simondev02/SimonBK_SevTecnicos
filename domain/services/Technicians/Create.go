@@ -7,6 +7,10 @@ import (
 )
 
 // CreateVehicleBrand - Crea una nueva marca de vehículo en la base de datos
-func CreateTechnicians(db *gorm.DB, vb *models.Technicians) error {
-	return db.Create(vb).Error
+func CreateTechnicians(db *gorm.DB, vb *models.Technicians, userID uint) error {
+	vb.CreatedBy = &userID
+	if err := db.Create(vb).Error; err != nil {
+		return err
+	}
+	return nil
 }

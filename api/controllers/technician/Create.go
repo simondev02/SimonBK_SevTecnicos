@@ -29,7 +29,9 @@ func CreateTechniciansHandler(c *gin.Context) {
 		return
 	}
 
-	if err := services.CreateTechnicians(db.DBConn, &vb); err != nil {
+	userID := c.MustGet("UserId").(uint)
+
+	if err := services.CreateTechnicians(db.DBConn, &vb, userID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
