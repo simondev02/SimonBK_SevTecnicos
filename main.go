@@ -11,6 +11,7 @@ package main
 import (
 	"SimonBK_SevTecnicos/docs"
 	"SimonBK_SevTecnicos/infra/db"
+	"log"
 
 	"SimonBK_SevTecnicos/routers"
 	"fmt"
@@ -73,8 +74,15 @@ func main() {
 		os.Exit(0)
 	}()
 
-	// Escuchar y servir
-	err = r.Run(":" + os.Getenv("SERVICE_PORT")) // escucha y sirve en 0.0.0.0:60030  (por defecto)
+	certFile := os.Getenv("TLS_CERT")
+	certKey := os.Getenv("TLS_KEY")
+	if certFile == "" || certKey == "" {
+		log.Println("Error al leer las variables de entorno.")
+		db.CloseDB()
+		os.Exit(1)
+	}
+
+	err = r.RunTLS(":"+os.Getenv("SERVICE_PORT"), certFile, certKey)
 
 	if err != nil {
 		fmt.Println("Error al iniciar el servidor:", err)

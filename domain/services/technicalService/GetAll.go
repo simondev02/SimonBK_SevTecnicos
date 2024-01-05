@@ -15,7 +15,7 @@ func GetAllTechnicalService(db *gorm.DB, plate *string, serviceType *string, pag
 		Preload("TechnicalServiceType").
 		Preload("Vehicle.Company").
 		Preload("Vehicle.Customer").
-		Preload("TechniciansToTechnicialService").
+		Joins("JOIN (SELECT DISTINCT ON (fk_technical_service) * FROM technicians_to_technicial_services ORDER BY fk_technical_service, created_at DESC) AS latest_technician ON latest_technician.fk_technical_Service = technical_services.id").
 		Preload("TechniciansToTechnicialService.Technicians")
 
 	if plate != nil && *plate != "" {
@@ -49,11 +49,11 @@ func GetAllTechnicalService(db *gorm.DB, plate *string, serviceType *string, pag
 			Plate:       tech.Vehicle.Plate,
 			Vin:         tech.Vehicle.Vin,
 			ServiceType: tech.TechnicalServiceType.Name,
-			// Technician:  tech.TechniciansToTechnicialService.Technicians.Name[0],
-			StartDate: tech.StartDate,
-			EndDate:   tech.EndDate,
-			Company:   tech.Vehicle.Company.Name,
-			Customer:  tech.Vehicle.Customer.Name,
+			Technician:  tech.TechniciansToTechnicialService[0].Technicians.Name,
+			StartDate:   tech.StartDate,
+			EndDate:     tech.EndDate,
+			Company:     tech.Vehicle.Company.Name,
+			Customer:    tech.Vehicle.Customer.Name,
 		}
 		response = append(response, techResponse)
 	}
