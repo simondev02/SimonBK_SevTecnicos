@@ -1,7 +1,37 @@
 basePath: /Vehicle
 definitions:
+  swagger.TechnicalService:
+    properties:
+      endDate:
+        type: string
+      fkTechnicalServiceType:
+        type: integer
+      fkVehicle:
+        type: integer
+      startDate:
+        type: string
+    type: object
+  swagger.TechnicalServiceStatus:
+    properties:
+      name:
+        type: string
+    type: object
+  swagger.TechnicalServiceToStatus:
+    properties:
+      fkTechnicalService:
+        type: integer
+      fkTechnicalStatus:
+        type: integer
+    type: object
+  swagger.TechnicalServiceType:
+    properties:
+      name:
+        type: string
+    type: object
   swagger.Technician:
     properties:
+      dni:
+        type: integer
       email:
         type: string
       name:
@@ -9,11 +39,538 @@ definitions:
       phone:
         type: string
     type: object
+  swagger.TechniciansToService:
+    properties:
+      fkTechnicalService:
+        type: integer
+      fkTechnician:
+        type: integer
+    type: object
 host: 192.168.40.104:60030
 info:
   contact: {}
   version: "1"
 paths:
+  /technicalService/:
+    get:
+      description: Obtiene una lista de todos servicios tecnicos.
+      parameters:
+      - default: 1
+        description: Número de página para la paginación
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Tamaño de página para la paginación
+        in: query
+        name: pageSize
+        type: integer
+      - description: Placa del Vehiculo
+        in: query
+        name: name
+        type: string
+      - description: Nombre del tipo de servicio
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Obtiene todos los  Servicios Tecnicos
+      tags:
+      - TechnicalService
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevio  servicio tecnico con los datos proporcionados
+      parameters:
+      - description: Datos de la servicio a crear
+        in: body
+        name: vb
+        required: true
+        schema:
+          $ref: '#/definitions/swagger.TechnicalService'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Crea una nuevo  servicio tecnico con los datos proporcionados
+      tags:
+      - TechnicalService
+  /technicalServiceStatus/:
+    get:
+      description: Obtiene una lista de todos Estados de servicios tecnicos.
+      parameters:
+      - default: 1
+        description: Número de página para la paginación
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Tamaño de página para la paginación
+        in: query
+        name: pageSize
+        type: integer
+      - description: Nombre del Estado
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Obtiene todos los Estados de Servicios Tecnicos
+      tags:
+      - TechnicalServiceStatus
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevio estado de servicio tecnico con los datos proporcionados
+      parameters:
+      - description: Datos de la estado a crear
+        in: body
+        name: vb
+        required: true
+        schema:
+          $ref: '#/definitions/swagger.TechnicalServiceStatus'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Crea una nuevo estado de servicio tecnico con los datos proporcionados
+      tags:
+      - TechnicalServiceStatus
+  /technicalServiceStatus/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Elimina un Estado de Servicio Tecnico  de la base de datos basado
+        en el ID proporcionado
+      parameters:
+      - description: ID del Estado de Servicio tecnico a eliminar
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mensaje de éxito al eliminar
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Tipo de  Servicio Tecnico no encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Error interno del servidor
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: Elimina un Tipo de Estado de Servicio Tecnico por ID
+      tags:
+      - TechnicalServiceStatus
+    get:
+      description: Obtiene un Estado por su ID específico
+      parameters:
+      - description: ID del Estado
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Detalles del técnico
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 'Error: ID inválido'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 'Error: tecnico no encontrado'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Obtiene Estado de servicio tecnico en  específicoestado
+      tags:
+      - TechnicalServiceStatus
+    put:
+      consumes:
+      - application/json
+      description: Actualiza un tecnico por ID con los datos proporcionados
+      parameters:
+      - description: ID del Estado a actualizar
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Datos de la Estado a actualizar
+        in: body
+        name: vb
+        required: true
+        schema:
+          $ref: '#/definitions/swagger.TechnicalServiceStatus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Actualiza un Estado por ID
+      tags:
+      - TechnicalServiceStatus
+  /technicalServiceToStatus/:
+    post:
+      consumes:
+      - application/json
+      description: Crea una nueva asignacionde  de estado con los datos proporcionados
+      parameters:
+      - description: Datos de la asignacion del estado al servicio a crear
+        in: body
+        name: vb
+        required: true
+        schema:
+          $ref: '#/definitions/swagger.TechnicalServiceToStatus'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/swagger.TechnicalServiceToStatus'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Crea una nueva asignacion de estado en los servicios con los datos
+        proporcionados
+      tags:
+      - StatusToService
+  /technicalServiceType/:
+    get:
+      description: Obtiene una lista de todos los Tipos de Servicios Tecnicos.
+      parameters:
+      - default: 1
+        description: Número de página para la paginación
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Tamaño de página para la paginación
+        in: query
+        name: pageSize
+        type: integer
+      - description: Nombre del Tipo de servicio Tecnico
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Obtiene todos los Tipos de Servicios Tecnicos
+      tags:
+      - TechnicalServiceType
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevio tipo de servicio tecnico con los datos proporcionados
+      parameters:
+      - description: Datos de la marca de vehículo a crear
+        in: body
+        name: vb
+        required: true
+        schema:
+          $ref: '#/definitions/swagger.TechnicalServiceType'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Crea una nuevo tipo de servicio tecnico con los datos proporcionados
+      tags:
+      - TechnicalServiceType
+  /technicalServiceType/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Elimina un Tipo de Servicio Tecnico  de la base de datos basado
+        en el ID proporcionado
+      parameters:
+      - description: ID del Tipo de Servicio tecnico a eliminar
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mensaje de éxito al eliminar
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Tipo de  Servicio Tecnico no encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Error interno del servidor
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: Elimina un Tipo de Servicio Tecnico por ID
+      tags:
+      - TechnicalServiceType
+    get:
+      description: Obtiene un Tipo de Servicio Tecnico por su ID específico
+      parameters:
+      - description: ID del Tipo de servicio Tecnico
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Detalles del Tipo de servicio técnico
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 'Error: ID inválido'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 'Error: Tipo de servicio tecnico no encontrado'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Obtiene Tipo de Servicio Tecnico específico
+      tags:
+      - TechnicalServiceType
+    put:
+      consumes:
+      - application/json
+      description: Actualiza un Tipo de Servicio tecnico por ID con los datos proporcionados
+      parameters:
+      - description: ID del tipo de servicio Tecnico a actualizar
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Datos del Tipo de Servicio Tecnico a actualizar
+        in: body
+        name: vb
+        required: true
+        schema:
+          $ref: '#/definitions/swagger.TechnicalServiceType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Actualiza un Tipo de Servicio Tecnico por ID
+      tags:
+      - TechnicalServiceType
   /technician/:
     get:
       description: Obtiene una lista de todos los Tecnicos.
@@ -30,7 +587,7 @@ paths:
         type: integer
       - description: Nombre del Tecnico
         in: query
-        name: technicians
+        name: name
         type: string
       produces:
       - application/json
@@ -131,6 +688,40 @@ paths:
       summary: Elimina un Tecnico por ID
       tags:
       - Technicians
+    get:
+      description: Obtiene un Tecnico por su ID específico
+      parameters:
+      - description: ID del Tecnico
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Detalles del técnico
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 'Error: ID inválido'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: 'Error: tecnico no encontrado'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Obtiene Tecnico específico
+      tags:
+      - Technicians
     put:
       consumes:
       - application/json
@@ -179,6 +770,42 @@ paths:
       summary: Actualiza un Tecnico por ID
       tags:
       - Technicians
+  /techniciansToService/:
+    post:
+      consumes:
+      - application/json
+      description: Crea una nueva asignacionde  técnico con los datos proporcionados
+      parameters:
+      - description: Datos de la asignacion de técnico al servicio a crear
+        in: body
+        name: vb
+        required: true
+        schema:
+          $ref: '#/definitions/swagger.TechniciansToService'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/swagger.TechniciansToService'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Crea una nueva asignacion técnico en los servicios con los datos proporcionados
+      tags:
+      - TechniciansToService
 securityDefinitions:
   ApiKeyAuth:
     in: header

@@ -2,10 +2,10 @@ package Controllers
 
 import (
 	"SimonBK_SevTecnicos/domain/models"
-	services "SimonBK_SevTecnicos/domain/services/Technicians"
+	services "SimonBK_SevTecnicos/domain/services/technicians"
 	"SimonBK_SevTecnicos/infra/db"
-	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,15 +29,31 @@ func CreateTechniciansHandler(c *gin.Context) {
 		return
 	}
 
+	// Comprobar si el DNI es nulo
+	if vb.Dni == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "El número de documento es obligatorio"})
+		return
+	}
+
 	userID := c.MustGet("UserId").(uint)
 
-	if err := services.CreateTechnicians(db.DBConn, &vb, userID); err != nil {
+	err := services.CreateTechnicians(db.DBConn, &vb, userID)
+	if err != nil {
+		// Comprobar si el error es debido a una violación de la restricción única de DNI
+		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "El número de documento ya existe"})
+			return
+		}
+		// Comprobar si el error es debido a un valor nulo en el DNI
+		if strings.Contains(err.Error(), "null value in column \"dni\" of relation \"technicians\" violates not-null constraint") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "El número de documento es obligatorio"})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": fmt.Sprintf("Técnico creado exitosamente con ID: %d", vb.ID),
-		"id":      vb.ID,
+		"message": "Técnico creado exitosamente",
 	})
 }

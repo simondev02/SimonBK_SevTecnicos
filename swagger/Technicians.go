@@ -4,4 +4,5 @@ type Technician struct {
 	Name  *string
 	Phone *string
 	Email *string
+	Dni   *uint
 }

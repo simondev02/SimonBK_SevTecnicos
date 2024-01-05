@@ -8,12 +8,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetAllTechnicians(db *gorm.DB, technician *string, page int, pageSize int) (views.Return, error) {
+func GetAllTechnicians(db *gorm.DB, name *string, page int, pageSize int) (views.Return, error) {
 	var techs []models.Technicians
 	query := db
 
-	if technician != nil && *technician != "" {
-		query = query.Where("name ILIKE ?", "%"+*technician+"%")
+	if name != nil && *name != "" {
+		query = query.Where("name ILIKE ?", "%"+*name+"%")
 	}
 
 	// Calcular el total de registros
@@ -39,6 +39,7 @@ func GetAllTechnicians(db *gorm.DB, technician *string, page int, pageSize int) 
 			Name:  tech.Name,
 			Phone: tech.Phone,
 			Email: tech.Email,
+			Dni:   tech.Dni,
 		}
 		response = append(response, techResponse)
 	}

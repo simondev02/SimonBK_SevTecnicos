@@ -7,6 +7,7 @@ type Technicians struct {
 	Name      *string
 	Phone     *string
 	Email     *string
+	Dni       *uint `gorm:"unique;not null"`
 	CreatedBy *uint
 	DeletedBy *uint
 	UpdatedBy *uint

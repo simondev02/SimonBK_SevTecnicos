@@ -1,0 +1,51 @@
+package services
+
+import (
+	"SimonBK_SevTecnicos/api/views"
+	"SimonBK_SevTecnicos/domain/models"
+	"fmt"
+
+	"gorm.io/gorm"
+)
+
+func GetAllTechnicalServiceStatus(db *gorm.DB, technician *string, page int, pageSize int) (views.Return, error) {
+	var techs []models.TechnicalServiceStatus
+	query := db
+
+	if technician != nil && *technician != "" {
+		query = query.Where("name ILIKE ?", "%"+*technician+"%")
+	}
+
+	// Calcular el total de registros
+	var total int64
+	if err := query.Model(&models.TechnicalServiceStatus{}).Count(&total).Error; err != nil {
+		return views.Return{}, fmt.Errorf("error al obtener el total de registros: %w", err)
+	}
+
+	// Calcular el offset basado en la página y el tamaño de página
+	offset := (page - 1) * pageSize
+
+	// Ahora aplicamos el límite y el offset para obtener los registros de la página actual
+	query = query.Offset(offset).Limit(pageSize)
+
+	if err := query.Find(&techs).Error; err != nil {
+		return views.Return{}, err
+	}
+
+	var response []interface{}
+	for _, tech := range techs {
+		techResponse := views.TechnicalServiceStatus{
+			ID:   tech.ID,
+			Name: tech.Name,
+		}
+		response = append(response, techResponse)
+	}
+
+	// Devolver una instancia de views.Return con los valores apropiados
+	return views.Return{
+		Page:     page,
+		PageSize: pageSize,
+		Total:    int(total),
+		Results:  response,
+	}, nil
+}

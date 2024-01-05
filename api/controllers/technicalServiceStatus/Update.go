@@ -2,7 +2,7 @@ package Controllers
 
 import (
 	"SimonBK_SevTecnicos/domain/models"
-	services "SimonBK_SevTecnicos/domain/services/technicians"
+	services "SimonBK_SevTecnicos/domain/services/technicalServiceStatus"
 	"SimonBK_SevTecnicos/infra/db"
 	"net/http"
 	"strconv"
@@ -12,20 +12,20 @@ import (
 )
 
 // @Security ApiKeyAuth
-// UpdateTechniciansdHandler - Controlador para actualizar un Tecnico por ID
-// @Summary Actualiza un Tecnico por ID
+// UpdateTechnicalServiceStatusHandler - Controlador para actualizar un Tecnico por ID
+// @Summary Actualiza un Estado por ID
 // @Description Actualiza un tecnico por ID con los datos proporcionados
-// @Tags Technicians
+// @Tags TechnicalServiceStatus
 // @Accept json
 // @Produce json
-// @Param id path int true "ID del Tecnico a actualizar"
-// @Param vb body swagger.Technician true "Datos de la marca de vehículo a actualizar"
+// @Param id path int true "ID del Estado a actualizar"
+// @Param vb body swagger.TechnicalServiceStatus true "Datos de la Estado a actualizar"
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Failure 404 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /technician/{id} [put]
-func UpdateTechnicianHandler(c *gin.Context) {
+// @Router /technicalServiceStatus/{id} [put]
+func UpdateTechnicalServiceStatusHandler(c *gin.Context) {
 	// Obtener el ID del técnico desde el URL
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -35,7 +35,7 @@ func UpdateTechnicianHandler(c *gin.Context) {
 	}
 
 	// Vincular el cuerpo de la solicitud a la estructura de Technicians
-	var tech models.Technicians
+	var tech models.TechnicalServiceStatus
 	if err := c.ShouldBindJSON(&tech); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -55,20 +55,16 @@ func UpdateTechnicianHandler(c *gin.Context) {
 	}
 
 	// Llamar a la función UpdateTechnician pasando el ID del técnico y el UserId
-	err = services.UpdateTechnician(db.DBConn, uint(id), &userID, &tech)
+	err = services.UpdateTechnicalServiceStatus(db.DBConn, uint(id), &userID, &tech)
 	if err != nil {
-		if strings.Contains(err.Error(), "técnico no encontrado") {
+		if strings.Contains(err.Error(), "estado no encontrado") {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
-		// Comprobar si el error es debido a una violación de la restricción única de DNI
-		if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "El Numero de documento proporcionado ya existe"})
-			return
-		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar el técnico"})
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar el estado"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Técnico actualizado exitosamente"})
+	c.JSON(http.StatusOK, gin.H{"message": "estado actualizado exitosamente"})
 }

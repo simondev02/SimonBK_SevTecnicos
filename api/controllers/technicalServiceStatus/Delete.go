@@ -1,7 +1,7 @@
 package Controllers
 
 import (
-	services "SimonBK_SevTecnicos/domain/services/technicians"
+	services "SimonBK_SevTecnicos/domain/services/technicalServiceStatus"
 	"SimonBK_SevTecnicos/infra/db"
 	"net/http"
 	"strconv"
@@ -11,20 +11,20 @@ import (
 )
 
 // @Security ApiKeyAuth
-// DeleteTechnicianHandler - Controlador para eliminar un Tecnico ID
-// @Summary Elimina un Tecnico por ID
-// @Description Elimina un Tecnico  de la base de datos basado en el ID proporcionado
-// @Tags Technicians
+// DeleteTechnicalServiceStatusHandler - Controlador para eliminar un Estado ID
+// @Summary Elimina un Tipo de Estado de Servicio Tecnico por ID
+// @Description Elimina un Estado de Servicio Tecnico  de la base de datos basado en el ID proporcionado
+// @Tags TechnicalServiceStatus
 // @Accept json
 // @Produce json
-// @Param id path int true "ID del tecnico a eliminar"
+// @Param id path int true "ID del Estado de Servicio tecnico a eliminar"
 // @Security ApiKeyAuth
 // @Success 200 {object} map[string]string "Mensaje de éxito al eliminar"
 // @Failure 400 {object} map[string]string "ID inválido"
-// @Failure 404 {object} map[string]string "Dispositivo Avl no encontrado"
+// @Failure 404 {object} map[string]string "Tipo de  Servicio Tecnico no encontrado"
 // @Failure 500 {object} map[string]string "Error interno del servidor"
-// @Router /technician/{id} [delete]
-func DeleteTechnicianHandler(c *gin.Context) {
+// @Router /technicalServiceStatus/{id} [delete]
+func DeleteTechnicalServiceStatusHandler(c *gin.Context) {
 	// Obtener el ID del técnico desde el URL
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -47,15 +47,15 @@ func DeleteTechnicianHandler(c *gin.Context) {
 	}
 
 	// Llamar a la función DeleteTechnician pasando el ID del técnico y el UserId
-	err = services.DeleteTechnician(db.DBConn, uint(id), &userID)
+	err = services.DeleteTechnicalServiceStatus(db.DBConn, uint(id), &userID)
 	if err != nil {
-		if strings.Contains(err.Error(), "técnico no encontrado") {
+		if strings.Contains(err.Error(), "Estado no encontrado") {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al eliminar el técnico"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al eliminar Estado"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Técnico eliminado exitosamente"})
+	c.JSON(http.StatusOK, gin.H{"message": "Estado eliminado exitosamente"})
 }
